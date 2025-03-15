@@ -43,7 +43,8 @@ class TrackZone(BaseSolution):
         """
         super().__init__(**kwargs)
         default_region = [(150, 150), (1130, 150), (1130, 570), (150, 570)]
-        self.region = cv2.convexHull(np.array(self.region or default_region, dtype=np.int32))
+        self.region = cv2.convexHull(
+            np.array(self.region or default_region, dtype=np.int32))
 
     def process(self, im0):
         """
@@ -64,7 +65,8 @@ class TrackZone(BaseSolution):
             >>> frame = cv2.imread("path/to/image.jpg")
             >>> results = tracker.process(frame)
         """
-        annotator = SolutionAnnotator(im0, line_width=self.line_width)  # Initialize annotator
+        annotator = SolutionAnnotator(
+            im0, line_width=self.line_width)  # Initialize annotator
 
         # Create a mask for the region and extract tracks from the masked image
         mask = np.zeros_like(im0[:, :, 0])
@@ -73,11 +75,13 @@ class TrackZone(BaseSolution):
         self.extract_tracks(masked_frame)
 
         # Draw the region boundary
-        cv2.polylines(im0, [self.region], isClosed=True, color=(255, 255, 255), thickness=self.line_width * 2)
+        cv2.polylines(im0, [self.region], isClosed=True, color=(
+            255, 255, 255), thickness=self.line_width * 2)
 
         # Iterate over boxes, track ids, classes indexes list and draw bounding boxes
         for box, track_id, cls in zip(self.boxes, self.track_ids, self.clss):
-            annotator.box_label(box, label=f"{self.names[cls]}:{track_id}", color=colors(track_id, True))
+            annotator.box_label(
+                box, label=f"{self.names[cls]}:{track_id}", color=colors(track_id, True))
 
         plot_im = annotator.result()
         self.display_output(plot_im)  # display output with base class function
